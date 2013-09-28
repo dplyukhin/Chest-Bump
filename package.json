@@ -18,7 +18,8 @@
   "devDependencies": {
     "expect.js": "*",
     "sinon": "*",
-    "mocha": "*"
+    "mocha": "*",
+    "nodemon": "*"
   },
   "engines": {
     "node": ">=0.8"
