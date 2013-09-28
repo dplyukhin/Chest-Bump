@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!-- Load the Paper.js library -->
+<script type="text/javascript" src="scripts/paper.js"></script>
+
+<script type="text/paperscript" canvas="myCanvas">
+
+
+function onFrame() {
+	
+	if (Key.isDown('left'))
+		boxie.left();
+	
+	if (Key.isDown('right'))
+		boxie.right();
+	
+	if (Key.isDown('up'))
+		boxie.up();
+	
+	if (Key.isDown('down'))
+		boxie.down();
+
+}
+
+var boxie = new function (){
+
+	var rectangle = new Rectangle({
+		point: view.center,
+		size: new Size(150, 150)
+	});
+	
+	var cornerSize = new Size(10, 10);
+	
+	var mr_boxie = new Path.Rectangle(rectangle, cornerSize);
+	mr_boxie.strokeColor = 'white';
+	mr_boxie.fillColor = 'white';
+	
+	return {
+		
+		left: function(){
+			mr_boxie.position += new Point(-10, 0);
+		},
+		
+		right: function(){
+			mr_boxie.position += new Point(10, 0);
+		},
+		
+		up: function(){
+			mr_boxie.position += new Point(0, -10);
+		},
+		
+		down: function(){
+			mr_boxie.position += new Point(0, 10);
+		}
+		
+	}
+	
+	
+};
+	
+
+</script>	
+
+</head>
+
+<body>
+	<canvas id="myCanvas" resize style="display:block; width:100%; height:100%; background-color:black"></canvas>
+</body>
+</html>
