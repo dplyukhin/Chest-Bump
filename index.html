@@ -1,0 +1,50 @@
+<html>
+
+  <body>
+    <script src="http://cdn.peerjs.com/0.3/peer.js"></script>
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+
+    <input type="text" id="local_id" value="Choose your name"/>
+    <input type="button" id="submit_local" value="submit" /><br/>
+    <input type="text" id="remote_id" value="Enter your partner's name"/>
+    <input type="button" id="submit_remote" value="submit" />
+
+    <script>
+$("#submit_local").click( function () {
+    localId = $("#local_id").val();
+    
+    var peer = new Peer(localId, {host: 'localhost', port: 9000, debug: 3});
+    peer.on('connection', function(conn) {
+        conn.on('data', function(data){
+            // Will print 'hi!'
+            console.log(data);
+        });
+        
+    });
+    //console.log(peer);
+
+    $("#submit_remote").click( function () {
+
+        console.log("Contacting remote id");
+        //console.log(peer);
+        remote_id = $("#remote_id").val();
+        
+        try {
+            //p = mod.peer;
+            conn = peer.connect(remote_id);
+            conn.on('open', function(){
+                conn.send('hi!');
+            });
+        }
+        catch (ReferenceError) {
+            console.log("Module does not contain peer credentials");
+        }
+        
+    });
+
+}); 
+
+    </script>
+    
+  </body>
+</html>
