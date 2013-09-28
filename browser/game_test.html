@@ -6,8 +6,8 @@
 
 <script type="text/x-paperscript" canvas="myCanvas">
 
-var BOX_TOP_SPEED = 10;
-var GRAVITY = 5;
+var BOX_TOP_SPEED = 15;
+var GRAVITY = 1;
 var NUM_PLAYERS = 1;
 
 var boxie = function (){
@@ -23,47 +23,48 @@ var boxie = function (){
     mr_boxie.strokeColor = 'white';
     mr_boxie.fillColor = 'white';
       
+    vel_i = new Point(0, 0);
     
     return {
+
+	    //Velocity vector
+	    velocity: vel_i,
 	    
-	    //Change in position
-	    delta_p: function (x, y) {
-	        mr_boxie.position += new Point(x, y);
-	    },
+	    //Change in position, delta_p is a POINT
+	    change_p: function (v) {
+	        mr_boxie.position += v;
+	    }
 	    
-	    //get_edges: function () {
-	        
-	    speed: 0
     }
 };
 
 //Initialize defaults
 PLAYERS = []
+
 for( var i=0; i < NUM_PLAYERS; i++ ){
     PLAYERS.push( new boxie() );
 }
 
+PLAYERS[0].velocity.y -= 20;
+
 function onFrame() {
-    
-    var x = 0, y = 0;
-    
+
+    var v = PLAYERS[0].velocity;
+    var move = 0;   //The 'force' of the keyboard
+    v.y += GRAVITY;
+
     if (Key.isDown('left'))
-	    x -= BOX_TOP_SPEED;
+	    move = -BOX_TOP_SPEED;
     
     if (Key.isDown('right'))
-	    x += BOX_TOP_SPEED;
+	    move = BOX_TOP_SPEED;
+	    
+	//INERTIA
+	move *= (Math.abs(v.x) + 1) / (Math.abs(move) + 1);
+	
+	v.x = move;
     
-    if (Key.isDown('up'))
-	    y -= BOX_TOP_SPEED;
-    
-    if (Key.isDown('down'))
-	    y += BOX_TOP_SPEED;
-
-    PLAYERS[0].delta_p(x, y);
-    
-    //Collision detection
-    //view.size.height
-
+    PLAYERS[0].change_p( v );
 }
 	
 </script>	
