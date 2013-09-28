@@ -4,62 +4,68 @@
 <!-- Load the Paper.js library -->
 <script type="text/javascript" src="scripts/paper.js"></script>
 
-<script type="text/paperscript" canvas="myCanvas">
+<script type="text/x-paperscript" canvas="myCanvas">
 
+var BOX_TOP_SPEED = 10;
+var GRAVITY = 5;
+var NUM_PLAYERS = 1;
 
-function onFrame() {
-	
-	if (Key.isDown('left'))
-		boxie.left();
-	
-	if (Key.isDown('right'))
-		boxie.right();
-	
-	if (Key.isDown('up'))
-		boxie.up();
-	
-	if (Key.isDown('down'))
-		boxie.down();
+var boxie = function (){
 
+    var rectangle = new Rectangle({
+	    point: view.center,
+	    size: new Size(20, 20)
+    });
+    
+    var cornerSize = new Size(2, 2);
+    
+    var mr_boxie = new Path.Rectangle(rectangle, cornerSize);
+    mr_boxie.strokeColor = 'white';
+    mr_boxie.fillColor = 'white';
+      
+    
+    return {
+	    
+	    //Change in position
+	    delta_p: function (x, y) {
+	        mr_boxie.position += new Point(x, y);
+	    },
+	    
+	    //get_edges: function () {
+	        
+	    speed: 0
+    }
+};
+
+//Initialize defaults
+PLAYERS = []
+for( var i=0; i < NUM_PLAYERS; i++ ){
+    PLAYERS.push( new boxie() );
 }
 
-var boxie = new function (){
+function onFrame() {
+    
+    var x = 0, y = 0;
+    
+    if (Key.isDown('left'))
+	    x -= BOX_TOP_SPEED;
+    
+    if (Key.isDown('right'))
+	    x += BOX_TOP_SPEED;
+    
+    if (Key.isDown('up'))
+	    y -= BOX_TOP_SPEED;
+    
+    if (Key.isDown('down'))
+	    y += BOX_TOP_SPEED;
 
-	var rectangle = new Rectangle({
-		point: view.center,
-		size: new Size(150, 150)
-	});
-	
-	var cornerSize = new Size(10, 10);
-	
-	var mr_boxie = new Path.Rectangle(rectangle, cornerSize);
-	mr_boxie.strokeColor = 'white';
-	mr_boxie.fillColor = 'white';
-	
-	return {
-		
-		left: function(){
-			mr_boxie.position += new Point(-10, 0);
-		},
-		
-		right: function(){
-			mr_boxie.position += new Point(10, 0);
-		},
-		
-		up: function(){
-			mr_boxie.position += new Point(0, -10);
-		},
-		
-		down: function(){
-			mr_boxie.position += new Point(0, 10);
-		}
-		
-	}
-	
-	
-};
-	
+    PLAYERS[0].delta_p(x, y);
+    
+    //Collision detection
+    //view.size.height
 
+}
+	
 </script>	
 
 </head>
