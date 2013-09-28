@@ -1,26 +1,29 @@
 {
-  "name": "uofthacks",
-  "version": "0.0.0",
-  "main": "lib/uofthacks.js",
-  "description": "A multiplayer mobile chrome app",
-  "homepage": "https://github.com/dranjd/UofTHacks",
-  "bugs": "https://github.com/dranjd/uofthacks/issues",
-  "author": {
-    "name": "Dan Plyukhin",
-    "email": "d.plyukhin@mail.utoronto.ca"
-  },
+  "name": "peer",
+  "version": "0.2.0",
+  "description": "Peer-to-peer data in browsers",
+  "main": "lib/server.js",
+  "bin": { "peerjs": "./bin/peerjs" },
   "repository": {
     "type": "git",
-    "url": "https://github.com/dranjd/uofthacks"
+    "url": "git://github.com/peers/peerjs-server.git"
   },
-  "licenses": [
-    {
-      "type": "GPLv2"
-    }
-  ],
+  "author": "Michelle Bu, Eric Zhang",
+  "license": "MIT",
+  "dependencies": {
+    "restify": "~2.3.5",
+    "ws": "~0.4.25",
+    "optimist": "*"
+  },
   "devDependencies": {
-    "grunt-contrib-jshint": "~0.6.0",
-    "grunt-contrib-nodeunit": "~0.2.0",
-    "grunt-contrib-watch": "~0.5.0"
+    "expect.js": "*",
+    "sinon": "*",
+    "mocha": "*"
+  },
+  "engines": {
+    "node": ">=0.8"
+  },
+  "scripts": {
+    "test": "mocha test"
   }
 }
