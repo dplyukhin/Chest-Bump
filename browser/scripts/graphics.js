@@ -1,3 +1,8 @@
+paper.install(window);
+window.onload = function() {
+	// Setup directly from canvas id:
+	paper.setup('myCanvas');
+
 
 var BOX_TOP_SPEED = 5;
 var GRAVITY = 0.25;
@@ -194,5 +199,7 @@ function onMouseDrag(event) {
     tool.minDistance = 20;
     
     JUMP_GESTURE = true;
+    
+}
     
 }
