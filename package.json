@@ -13,15 +13,15 @@
   "dependencies": {
     "restify": "~2.3.5",
     "ws": "~0.4.25",
-    "optimist": "*"
+    "optimist": "*",
+    "peerjs": "*",
+    "connect": "*"
   },
   "devDependencies": {
     "expect.js": "*",
     "sinon": "*",
     "mocha": "*",
-    "nodemon": "*",
-    "peerjs": "*",
-    "connect": "*"
+    "nodemon": "*"
   },
   "engines": {
     "node": ">=0.8",
