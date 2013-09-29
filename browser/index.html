@@ -30,10 +30,10 @@ var boxie = function (){
 
     var rectangle = new Rectangle({
 	point: view.center,
-	size: new Size(20, 20)
+	size: new Size(50, 50)
     });
     
-    var cornerSize = new Size(2, 2);
+    var cornerSize = new Size(4, 4);
     
     var mr_boxie = new Path.Rectangle(rectangle, cornerSize);
     mr_boxie.strokeColor = 'white';
@@ -253,8 +253,9 @@ AddPlayer();
         
         try {
             //p = mod.peer;
-            c = peer.connect(remote_id);
-            c.on('open', function(){
+      conn = peer.connect(remote_id);
+      paperscript.protoype.conn = conn;
+            conn.on('open', function(){
 CONNECTED = true;
 //NUM_PLAYERS += 1;
                 
