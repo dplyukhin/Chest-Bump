@@ -3,6 +3,8 @@ var BOX_TOP_SPEED = 5;
 var GRAVITY = 0.25;
 var JUMP_HEIGHT = 7;
 var NUM_PLAYERS = 1;
+var MOUSE_X_DIR = 0;
+var JUMP_GESTURE = false;
 
 
 var staticBox = function(pt_one, pt_two) {
@@ -80,11 +82,10 @@ function onFrame() {
     var move = 0;   //The 'force' of the keyboard
     v.y += GRAVITY;
 
-    if (Key.isDown('left'))
-	move = -BOX_TOP_SPEED;
-    
-    if (Key.isDown('right'))
-	move = BOX_TOP_SPEED;
+    if (MOUSE_X_DIR < 0)
+	    move = -BOX_TOP_SPEED;
+    if (MOUSE_X_DIR > 0)
+    	move = BOX_TOP_SPEED;
     
     //INERTIA
     move *= (Math.abs(v.x) + 1) / (Math.abs(move) + 1);
@@ -110,10 +111,10 @@ function onFrame() {
                 console.log(COLLIDABLE[o2].box.position.y);
 		//GRAVITY=0;
 		v.y=0;
-                if (Key.isDown('space'))
+                if (JUMP_GESTURE === true)
                     v.y = -JUMP_HEIGHT;
             }
-            if( LOCAL_PLAYER.box.bounds.top < COLLIDABLE[o2].box.bounds.bottom ){
+            else if( LOCAL_PLAYER.box.bounds.top < COLLIDABLE[o2].box.bounds.bottom ){
                 //LOCAL_PLAYER.box.position.y = COLLIDABLE[o2].box.position.y - 15;
                 v.y = Math.abs(v.y); //Precaution in case of wallhacks
             }
@@ -122,8 +123,9 @@ function onFrame() {
             if(LOCAL_PLAYER.box.bounds.left < COLLIDABLE[o2].box.bounds.right && LOCAL_PLAYER.box.bounds.right > COLLIDABLE[o2].box.bounds.right){
                 //console.log(COLLIDABLE[o2].box.bounds.width);
                 LOCAL_PLAYER.box.position.x = COLLIDABLE[o2].box.bounds.right + 0.5*LOCAL_PLAYER.box.bounds.width;
-                if (Key.isDown('space')){
-                    v.x += BOX_TOP_SPEED*7;
+
+                if (JUMP_GESTURE === true){
+                    v.x += BOX_TOP_SPEED*4;
                     v.y = -JUMP_HEIGHT;
                 } else {
                     v.x = 0;
@@ -132,8 +134,8 @@ function onFrame() {
 
             } else if(LOCAL_PLAYER.box.bounds.right > COLLIDABLE[o2].box.bounds.left && LOCAL_PLAYER.box.bounds.left < COLLIDABLE[o2].box.bounds.left){
                 LOCAL_PLAYER.box.position.x = COLLIDABLE[o2].box.bounds.left - 0.5*LOCAL_PLAYER.box.bounds.width;
-                if (Key.isDown('space')){
-                    v.x -= BOX_TOP_SPEED*7;
+                if (JUMP_GESTURE === true){
+                    v.x -= BOX_TOP_SPEED*4;
                     v.y = -JUMP_HEIGHT;
                 } else {
                     v.x = 0;
@@ -149,5 +151,36 @@ function onFrame() {
 
     
     LOCAL_PLAYER.change_p( v );
+    JUMP_GESTURE = false;
 }
 
+
+function onMouseDown(event) {
+    
+    mouse_start_pos = new Point((view.size.width/2), (view.size.height/2));
+    mouse_end_pos = event.point;
+    
+    var mouse_dir_vector =  mouse_end_pos - mouse_start_pos;
+    
+    MOUSE_X_DIR = mouse_dir_vector.x;
+    
+}
+
+function onMouseUp(event) {
+    // Once the mouse has been release, switch MOUSE_X_DIR to 0 so 
+    // that boxie movement will stop
+    
+    MOUSE_X_DIR = 0;
+}
+
+
+function onMouseDrag(event) {
+    //Check with the jump gesture was activated, if so 
+    // change JUMP_GESTURE to true so that the fella
+    // can jump
+    
+    tool.minDistance = 20;
+    
+    JUMP_GESTURE = true;
+    
+}
