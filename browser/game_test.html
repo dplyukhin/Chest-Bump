@@ -7,8 +7,20 @@
 <script type="text/x-paperscript" canvas="myCanvas">
 
 var BOX_TOP_SPEED = 15;
-var GRAVITY = 1;
+var GRAVITY = .25;
 var NUM_PLAYERS = 1;
+
+
+var staticBox = function(pt_one, pt_two) {
+	
+	    var path = new Path.Rectangle(pt_one, pt_two);
+	    path.strokeColor = 'red';
+	    path.fillColor = 'red';	
+	    
+	    return {
+	    	box: path
+	    };
+}
 
 var boxie = function (){
 
@@ -33,22 +45,34 @@ var boxie = function (){
 	    //Change in position, delta_p is a POINT
 	    change_p: function (v) {
 	        mr_boxie.position += v;
-	    }
+	    },
+	    
+	    box: mr_boxie
 	    
     }
 };
 
+COLLIDABLE = [];
+
+COLLIDABLE.push( new staticBox(new Point(0, view.size.height-10), new Point(view.size.width, view.size.height) ) );
+//PLATFORMS.push( new Point(), new Point());
+
+
 //Initialize defaults
-PLAYERS = []
+PLAYERS = [];
 
 for( var i=0; i < NUM_PLAYERS; i++ ){
-    PLAYERS.push( new boxie() );
+	var b = new boxie()
+    PLAYERS.push( b );
+	//COLLIDABLE.push( b );
 }
 
-PLAYERS[0].velocity.y -= 20;
+PLAYERS[0].velocity.y -= 0;
+
+
 
 function onFrame() {
-
+	
     var v = PLAYERS[0].velocity;
     var move = 0;   //The 'force' of the keyboard
     v.y += GRAVITY;
@@ -64,14 +88,30 @@ function onFrame() {
 	
 	v.x = move;
     
+    for( var o=0; o < PLAYERS.length; o++ ) {
+    	for( var o2=0; o2 < COLLIDABLE.length; o2++ ) {
+			if( PLAYERS[o].box.bounds.intersects( COLLIDABLE[o2].box.bounds ) ) {
+				//console.log(COLLIDABLE[o2].box.position.y);
+				console.log(PLAYERS[o].box.point);
+				console.log(PLAYERS[o].box.position);
+				PLAYERS[o].box.position.y = COLLIDABLE[o2].box.position.y - 15;
+				GRAVITY=0;
+				v.y=0;
+			}
+    	}
+    }
+    
     PLAYERS[0].change_p( v );
 }
+
+
+
 	
 </script>	
 
 </head>
 
-<body>
+<body style="margin:0">
 	<canvas id="myCanvas" resize style="display:block; width:100%; height:100%; background-color:black"></canvas>
 </body>
 </html>
