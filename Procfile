@@ -1,0 +1,1 @@
+web: node bin/peerjs --port 9000 --key peerjs

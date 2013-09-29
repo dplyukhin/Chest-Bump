@@ -1,15 +1,15 @@
 {
-  "name": "peer",
+  "name": "ChestBumps",
   "version": "0.2.0",
-  "description": "Peer-to-peer data in browsers",
+  "description": "A crashing, bumping, webRTC-based mobile browser game to play with friends. Supported by Peerjs/server, Paper.js, and Node.js",
   "main": "lib/server.js",
   "bin": { "peerjs": "./bin/peerjs" },
   "repository": {
     "type": "git",
-    "url": "git://github.com/peers/peerjs-server.git"
+    "url": "git://github.com/dranjd/UofTHacks.git"
   },
-  "author": "Michelle Bu, Eric Zhang",
-  "license": "MIT",
+  "author": "Dan Plyukhin and Dragan Soho",
+  "license": "GPLv2",
   "dependencies": {
     "restify": "~2.3.5",
     "ws": "~0.4.25",
@@ -24,7 +24,8 @@
     "connect": "*"
   },
   "engines": {
-    "node": ">=0.8"
+    "node": ">=0.8",
+    "npm": "*"
   },
   "scripts": {
     "test": "mocha test"
