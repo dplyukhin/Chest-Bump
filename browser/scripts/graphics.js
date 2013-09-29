@@ -2,10 +2,12 @@
 var BOX_TOP_SPEED = 5;
 var GRAVITY = 0.25;
 var JUMP_HEIGHT = 7;
-var NUM_PLAYERS = 1;
 var MOUSE_X_DIR = 0;
 var JUMP_GESTURE = false;
 
+NUM_PLAYERS = 1;
+CONNECTED = false;
+conn = {};
 
 var staticBox = function(pt_one, pt_two) {
     
@@ -65,17 +67,21 @@ COLLIDABLE.push( new staticBox(new Point(200, view.size.height-100), new Point(5
 LOCAL_PLAYER = new boxie();
 PLAYERS = [];
 
-for( var i=0; i < NUM_PLAYERS-1; i++ ){
-    var b = new boxie();
-    PLAYERS.push( b );
-    COLLIDABLE.push( b );
+LOCAL_PLAYER.velocity.y -= 3;
+
+AddPlayer = function(){
+        var b = new boxie();
+        PLAYERS.push( b );
+        COLLIDABLE.push( b );
 }
 
-LOCAL_PLAYER.velocity.y -= 0;
-
-
-
 function onFrame() {
+
+    if(NUM_PLAYERS-1 > PLAYERS.length){
+        var b = new boxie();
+        PLAYERS.push( b );
+        COLLIDABLE.push( b );
+    }
     
     var v = LOCAL_PLAYER.velocity;
     if(Math.abs(v.x) > BOX_TOP_SPEED) v.x /= Math.abs(v.x) * BOX_TOP_SPEED; //speed sometimes goes too high, wallhacks
@@ -108,7 +114,7 @@ function onFrame() {
             if( LOCAL_PLAYER.box.bounds.top + LOCAL_PLAYER.box.bounds.height > COLLIDABLE[o2].box.bounds.top && LOCAL_PLAYER.box.bounds.top < COLLIDABLE[o2].box.bounds.top ){
                 //console.log("Local:"+LOCAL_PLAYER.box.bounds.y+" floor: "+COLLIDABLE[o2].box.bounds.top);
 		LOCAL_PLAYER.box.position = new Point(LOCAL_PLAYER.box.position.x, (COLLIDABLE[o2].box.bounds.top - 0.5*LOCAL_PLAYER.box.bounds.height) ); //- 15;
-                console.log(COLLIDABLE[o2].box.position.y);
+                
 		//GRAVITY=0;
 		v.y=0;
                 if (JUMP_GESTURE === true)
@@ -146,12 +152,18 @@ function onFrame() {
 	}
     }
     for( var o=0; o < PLAYERS.length; o++ ) {
+        
     }
 
 
     
     LOCAL_PLAYER.change_p( v );
     JUMP_GESTURE = false;
+    
+    if(CONNECTED){
+        conn.send({x: LOCAL_PLAYER.box.position.x, y: LOCAL_PLAYER.box.position.y});
+    }
+
 }
 
 
