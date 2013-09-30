@@ -1,298 +1,43 @@
 <html>
-<head>
+  <head>
 
- <script type="text/javascript" src="scripts/paper.js"></script>
+    <title>Chest Bump!</title>
 
- <script type="text/paperscript" canvas="myCanvas">
+    <script data-main="/scripts/main" src="lib/requirejs/require.js"></script>
 
-var BOX_TOP_SPEED = 5;
-var GRAVITY = 0.25;
-var JUMP_HEIGHT = 7;
-var MOUSE_X_DIR = 0;
-var JUMP_GESTURE = false;
-
-NUM_PLAYERS = 1;
-CONNECTED = false;
-conn = {};
-
-var staticBox = function(pt_one, pt_two) {
-    
-    var path = new Path.Rectangle(pt_one, pt_two);
-    path.strokeColor = '#A62F00';
-    path.fillColor = '#A62F00';	
-    
-    return {
-	box: path
-    };
-}
-
-var boxie = function (){
-
-    var rectangle = new Rectangle({
-	point: view.center,
-	size: new Size(50, 50)
-    });
-    
-    var cornerSize = new Size(4, 4);
-    
-    var mr_boxie = new Path.Rectangle(rectangle, cornerSize);
-    mr_boxie.strokeColor = 'white';
-    mr_boxie.fillColor = 'white';
-    
-    vel_i = new Point(0, 0);
-    
-    return {
-
-	//Velocity vector
-	velocity: vel_i,
-	
-	//Change in position, delta_p is a POINT
-	change_p: function (v) {
-	    mr_boxie.position += v;
-	},
-	
-	box: mr_boxie
-	
-    }
-};
-
-COLLIDABLE = [];
-
-COLLIDABLE.push( new staticBox(new Point(0, view.size.height-10), new Point(view.size.width, view.size.height) ) );
-//COLLIDABLE.push( new staticBox(new Point(50, view.size.height-600), new Point(60, view.size.height-10) ) );
-//COLLIDABLE.push( new staticBox(new Point(view.size.width - 50, view.size.height-600), new Point(view.size.width, view.size.height-10) ) );
-COLLIDABLE.push( new staticBox(new Point(200, view.size.height-100), new Point(500, view.size.height-150) ) );
-COLLIDABLE.push( new staticBox(new Point(300, view.size.height-150), new Point(500, view.size.height-200) ) );
-COLLIDABLE.push( new staticBox(new Point(700, view.size.height-170), new Point(800, view.size.height-210) ) );
-COLLIDABLE.push( new staticBox(new Point(400, view.size.height-250), new Point(500, view.size.height-260) ) );
-COLLIDABLE.push( new staticBox(new Point(200, view.size.height-100), new Point(500, view.size.height-150) ) );
-//PLATFORMS.push( new Point(), new Point());
-
-
-//Initialize defaults
-LOCAL_PLAYER = new boxie();
-PLAYERS = [];
-
-LOCAL_PLAYER.velocity.y -= 3;
-
-this.AddPlayer = function(){
-        var b = new boxie();
-        PLAYERS.push( b );
-        COLLIDABLE.push( b );
-}
-
-function onFrame() {
-
-    if(NUM_PLAYERS-1 > PLAYERS.length){
-        var b = new boxie();
-        PLAYERS.push( b );
-        COLLIDABLE.push( b );
-    }
-    
-    var v = LOCAL_PLAYER.velocity;
-    if(Math.abs(v.x) > BOX_TOP_SPEED) v.x /= Math.abs(v.x) * BOX_TOP_SPEED; //speed sometimes goes too high, wallhacks
-    var move = 0;   //The 'force' of the keyboard
-    v.y += GRAVITY;
-
-    if (MOUSE_X_DIR < 0)
-	    move = -BOX_TOP_SPEED;
-    if (MOUSE_X_DIR > 0)
-    	move = BOX_TOP_SPEED;
-    
-    //INERTIA
-    move *= (Math.abs(v.x) + 1) / (Math.abs(move) + 1);
-    
-    v.x = move;
-    
-
-    //console.log(COLLIDABLE[o2].box.position.y);
-    //console.log(LOCAL_PLAYER.box.point);
-    //console.log(LOCAL_PLAYER.box.position);
-
-
-    //i am so mad.. rectangle.position is measured from the CENTER. this is inconvenient for collision detection.
-    //COLLISION DETECTION
-    for( var o2=0; o2 < COLLIDABLE.length; o2++ ) {
-
-	if( LOCAL_PLAYER.box.bounds.intersects( COLLIDABLE[o2].box.bounds ) ) {
-
-            //VERTICAL BOUNDS
-            if( LOCAL_PLAYER.box.bounds.top + LOCAL_PLAYER.box.bounds.height > COLLIDABLE[o2].box.bounds.top && LOCAL_PLAYER.box.bounds.top < COLLIDABLE[o2].box.bounds.top ){
-                //console.log("Local:"+LOCAL_PLAYER.box.bounds.y+" floor: "+COLLIDABLE[o2].box.bounds.top);
-		LOCAL_PLAYER.box.position = new Point(LOCAL_PLAYER.box.position.x, (COLLIDABLE[o2].box.bounds.top - 0.5*LOCAL_PLAYER.box.bounds.height) ); //- 15;
-                
-		//GRAVITY=0;
-		v.y=0;
-                if (JUMP_GESTURE === true)
-                    v.y = -JUMP_HEIGHT;
-            }
-            else if( LOCAL_PLAYER.box.bounds.top < COLLIDABLE[o2].box.bounds.bottom ){
-                //LOCAL_PLAYER.box.position.y = COLLIDABLE[o2].box.position.y - 15;
-                v.y = Math.abs(v.y); //Precaution in case of wallhacks
-            }
-            
-            //HORIZONTAL BOUNDS
-            if(LOCAL_PLAYER.box.bounds.left < COLLIDABLE[o2].box.bounds.right && LOCAL_PLAYER.box.bounds.right > COLLIDABLE[o2].box.bounds.right){
-                //console.log(COLLIDABLE[o2].box.bounds.width);
-                LOCAL_PLAYER.box.position.x = COLLIDABLE[o2].box.bounds.right + 0.5*LOCAL_PLAYER.box.bounds.width;
-
-                if (JUMP_GESTURE === true){
-                    v.x += BOX_TOP_SPEED*4;
-                    v.y = -JUMP_HEIGHT;
-                } else {
-                    v.x = 0;
-                }
-
-
-            } else if(LOCAL_PLAYER.box.bounds.right > COLLIDABLE[o2].box.bounds.left && LOCAL_PLAYER.box.bounds.left < COLLIDABLE[o2].box.bounds.left){
-                LOCAL_PLAYER.box.position.x = COLLIDABLE[o2].box.bounds.left - 0.5*LOCAL_PLAYER.box.bounds.width;
-                if (JUMP_GESTURE === true){
-                    v.x -= BOX_TOP_SPEED*4;
-                    v.y = -JUMP_HEIGHT;
-                } else {
-                    v.x = 0;
-                }
-                
-            }
-
-	}
-    }
-    for( var o=0; o < PLAYERS.length; o++ ) {
-        
-    }
-
-
-    
-    LOCAL_PLAYER.change_p( v );
-    JUMP_GESTURE = false;
-    
-                      if(CONNECTED){
-        conn.send({x: LOCAL_PLAYER.box.position.x, y: LOCAL_PLAYER.box.position.y});
-    }
-
-}
-
-
-function onMouseDown(event) {
-    
-    mouse_start_pos = new Point((view.size.width/2), (view.size.height/2));
-    mouse_end_pos = event.point;
-    
-    var mouse_dir_vector =  mouse_end_pos - mouse_start_pos;
-    
-    MOUSE_X_DIR = mouse_dir_vector.x;
-    
-}
-
-function onMouseUp(event) {
-    // Once the mouse has been release, switch MOUSE_X_DIR to 0 so 
-    // that boxie movement will stop
-    
-    MOUSE_X_DIR = 0;
-}
-
-
-function onMouseDrag(event) {
-    //Check with the jump gesture was activated, if so 
-    // change JUMP_GESTURE to true so that the fella
-    // can jump
-    
-    tool.minDistance = 20;
-    
-    JUMP_GESTURE = true;
-    
-}
-    paper.install(window.paperscript);
-
-</script>
-    <script src="http://cdn.peerjs.com/0.3/peer.js"></script>
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script type="text/javascript" src="scripts/paper.js"></script>
+    <script src="http://cdn.peerjs.com/0.3/peer.js"></script>
+    
+    <script type="text/paperscript" src="scripts/graphics.js" canvas="myCanvas"></script>
+    <script type="text/javascript" src="scripts/peer-init.js"></script>
+    
+    <link rel="stylesheet" type="text/css" href="css/level_design.css">
+    
+  </head>
 
+  <body>
+    
     <input type="text" id="local_id" value="Choose your name"/>
     <input type="button" id="submit_local" value="submit" /><br/>
     <input type="text" id="remote_id" value="Enter your partner's name"/>
     <input type="button" id="submit_remote" value="submit" />
-
-    <script>
-      var paperscript = {};
-      AddPlayer = function() {};
-      window.onload = function() {
-      AddPlayer = paperscript.AddPlayer;
-      }
-
-CONNECTED = false;
-c = {};
-NUM_PLAYERS = 1;
-      $("#submit_local").click( function () {
-    localId = $("#local_id").val();
-
-    var peer = new Peer(localId, {host: 'localhost', port: 9000, debug: 3});
-peer.on('connection', function(conn) {
-NUM_PLAYERS +=1;
-conn.on('data', function(data){
-if(!CONNECTED) CONNECTED = true;
-// Won't print 'hi!'
-if(PLAYERS.length){
-PLAYERS[0].box.position.x = data.x;
-PLAYERS[0].box.position.y = data.y;//console.log(data);
-} else {
-AddPlayer();
-}
-//CONNECTED = true;
-//NUM_PLAYERS += 1;
-        });
-        
-    });
-    //console.log(peer);
-
-    $("#submit_remote").click( function () {
-
-        console.log("Contacting remote id");
-        //console.log(peer);
-        remote_id = $("#remote_id").val();
-        
-        try {
-            //p = mod.peer;
-      conn = peer.connect(remote_id);
-      paperscript.protoype.conn = conn;
-            conn.on('open', function(){
-CONNECTED = true;
-//NUM_PLAYERS += 1;
-                
-            });
-        }
-        catch (ReferenceError) {
-            console.log("Module does not contain peer credentials");
-        }
-        
-    });
-
-}); 
-
-    </script>
     
-    <link rel="stylesheet" type="text/css" href="css/level_design.css">
+    <div id="hill_container"> 
+      <div class="halfCircle left_1"> </div>
+      <div class="halfCircle left_2"> </div>
+      <div class="halfCircle middle_1"> </div>
+      <div class="halfCircle middle_2"> </div>
+      <div class="halfCircle right_1"> </div>
+      <div class="halfCircle right_2"> </div>	
+      <div class="hill-container-bg"> </div>
+    </div>
+    
+    <div id="canvas-container">
 
-</head>
-
-
-  <body>
-
-	<div id="hill_container"> 
-		<div class="halfCircle left_1"> </div>
-		<div class="halfCircle left_2"> </div>
-		<div class="halfCircle middle_1"> </div>
-		<div class="halfCircle middle_2"> </div>
-		<div class="halfCircle right_1"> </div>
-		<div class="halfCircle right_2"> </div>	
-		<div class="hill-container-bg"> </div>
-	</div>
-	
-	<div id="canvas-container">
-
-		<canvas id="myCanvas"></canvas>
-	
-	</div>
+      <canvas id="myCanvas"></canvas>
+      
+    </div>
     
   </body>
 </html>
