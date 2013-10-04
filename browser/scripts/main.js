@@ -1,7 +1,7 @@
 require.config({
     paths: {
         jquery: '/lib/jquery/jquery',
-	peerjs: '/lib/peerjs/dist/peer'
+	peerjs: '/lib/peerjs_devel/dist/peer'
     }
 });
 
@@ -15,7 +15,7 @@ require(['jquery', 'peerjs', 'connection'], function ($, peerjs, connection) {
 
 	    $("#submit_remote").click( function () {
 		remote_id = $("#remote_id").val();
-		connection.connect(remote_id)
+		connection.remoteConnect(remote_id)
 	    });
 	}); 
 });
