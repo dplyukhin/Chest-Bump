@@ -74,24 +74,18 @@ for(var p=0; p < platform_points.length; p+=1){
 
 //Initialize defaults
 LOCAL_PLAYER = new boxie();
-PLAYERS = [];
+this.PLAYERS = [];
 
 LOCAL_PLAYER.velocity.y -= 3;
 
 this.AddPlayer = function(){
     var b = new boxie();
-    PLAYERS.push( b );
+    this.PLAYERS.push( b );
     COLLIDABLE.push( b );
 }
 
 /*This function is called iteratively at ~60 fps*/
 function onFrame() {
-    //This doesn't work, maybe because globals?
-    if(NUM_PLAYERS-1 > PLAYERS.length){
-	var b = new boxie();
-	PLAYERS.push( b );
-	COLLIDABLE.push( b );
-    }
     
     var v = LOCAL_PLAYER.velocity;
     //speed sometimes goes too high, wallhacks
@@ -159,11 +153,11 @@ function onFrame() {
 
 	}
     }
-    for( var o=0; o < PLAYERS.length; o++ ) {
+    /*for( var o=0; o < PLAYERS.length; o++ ) {
 	//TODO: update position of each player from packets
 	//PLAYERS[o].position.x
 	//OR we could update as soon as we get the packet.. that might be more time-efficient.
-    }
+    }*/
     
     LOCAL_PLAYER.change_p( v );
     JUMP_GESTURE = false;

@@ -11,14 +11,13 @@ define(['peerjs'], function (peerjs) {
 
 	setLocalName: function(local_id) {
 	    var peer = new peerjs.Peer(local_id, {host: 'localhost', port: 9000, debug: 3});
+	    PeerConnection.LOCAL_PEER = peer;
 
 	    //This gets called ONLY when someone connects TO you
 	    peer.on('connection', function(conn) {
 		console.log('Someone connected to you!');
 		PeerConnection.connectionEstablished(conn);
 	    });
-
-	    PeerConnection.LOCAL_PEER = peer;
 	},
 
 	remoteConnect: function (remote_id) {
@@ -27,10 +26,8 @@ define(['peerjs'], function (peerjs) {
 		//These will only be called if you are the one to initiate a connection
 		conn = PeerConnection.LOCAL_PEER.connect(remote_id);
 		conn.on('open', function(){
-
-		    PeerConnection.connectionEstablished(conn);
 		    console.log("Opened a connection!");
-		    conn.send('hi there!');
+		    PeerConnection.connectionEstablished(conn);
 		});
 	    }
 	    catch (ReferenceError) {
@@ -48,7 +45,9 @@ define(['peerjs'], function (peerjs) {
 
 	    //This gets called whenever you get data
 	    conn.on('data', function(data){
-		console.log('Got this message: '+data); 
+		//console.log('Got this message: '+data); 
+		paper.PLAYERS[0].box.position.x = data.x;
+		paper.PLAYERS[0].box.position.y = data.y;
 		//conn.send('hi you!');  //infinite hello's :3
 	    });
 	}
