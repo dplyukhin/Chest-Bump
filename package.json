@@ -3,7 +3,9 @@
   "version": "0.2.0",
   "description": "A crashing, bumping, webRTC-based mobile browser game to play with friends. Supported by Peerjs/server, Paper.js, and Node.js",
   "main": "lib/server.js",
-  "bin": { "peerjs": "./bin/peerjs" },
+  "bin": {
+    "peerjs": "./bin/peerjs"
+  },
   "repository": {
     "type": "git",
     "url": "git://github.com/dranjd/UofTHacks.git"
@@ -25,7 +27,9 @@
     "bower": "*",
     "grunt": "*",
     "grunt-contrib-watch": "*",
-    "grunt-contrib-jshint": "*"
+    "grunt-contrib-jshint": "*",
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-contrib-copy": "~0.4.1"
   },
   "engines": {
     "node": ">=0.8",

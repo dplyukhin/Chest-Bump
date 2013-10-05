@@ -1,4 +1,7 @@
 module.exports = function(grunt) {
+    var SRC = 'src/';
+    var SRCp = SRC + 'paper/';
+    var DEST = 'browser/scripts/';
 
     grunt.initConfig({
         watch: {
@@ -11,14 +14,30 @@ module.exports = function(grunt) {
             },
         },
         jshint: {
-            all: ['Gruntfile.js', 'browser/scripts/**/*.js']
+            all: ['Gruntfile.js', SRC+'/**/*.js']
+        },
+        concat: {
+            paper: {
+                src: [SRCp+'objects.js', SRCp+'animation.js', SRCp+'settings.js'],
+                dest: DEST+'graphics.js'
+            }
+        },
+        copy: {
+            all: {
+                expand: true,
+                cwd: SRC,
+                src: ['*'],
+                dest: DEST
+            }
         }
     });
 
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-contrib-copy');
 
-    grunt.registerTask('build', ['jshint']);
+    grunt.registerTask('build', ['jshint', 'concat', 'copy']);
     grunt.registerTask('default', ['watch']);
 
 };
