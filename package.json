@@ -23,7 +23,9 @@
     "mocha": "*",
     "nodemon": "*",
     "bower": "*",
-    "grunt": "*"
+    "grunt": "*",
+    "grunt-contrib-watch": "*",
+    "grunt-contrib-jshint": "*"
   },
   "engines": {
     "node": ">=0.8",
