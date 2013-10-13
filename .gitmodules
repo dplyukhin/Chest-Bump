@@ -1,0 +1,3 @@
+[submodule "browser/lib/peerjs"]
+	path = browser/lib/peerjs
+	url = git://github.com/dplyukhin/peerjs.git
