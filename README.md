@@ -8,10 +8,15 @@ Try it at https://chestbumps.heroku.com
 Backend
 -------
 The backend uses node.js and the peerjs server from https://github.com/peers/peerjs-server
-To set up, clone this git repo and run
+To set up the server, clone this git repo like so:
 
-    npm install
+   git clone <URL> --recurse-submodules
 
+and run
+
+   bower install
+   npm install
+   
 Build and run the server with
 
     grunt build
