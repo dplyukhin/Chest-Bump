@@ -27,3 +27,5 @@ Real-time communication
 -----------------------
 Mobile browsers use the WebRTC library Peerjs to communicate directly - the purpose of the server is to negotiate a connection between browsers (not proxy data).  Note, WebRTC is currently only supported by Chrome and Firefox (both desktop and mobile), and you MUST play on the same browser class as your partner, or else communication fails.
 
+DS
+
