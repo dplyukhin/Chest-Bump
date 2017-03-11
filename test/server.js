@@ -2,6 +2,8 @@ var PeerServer = require('../').PeerServer;
 var expect = require('expect.js');
 var sinon = require('sinon');
 
+/* Dragan test commit */
+
 describe('PeerServer', function() {
   describe('constructor', function() {
     before(function() {
